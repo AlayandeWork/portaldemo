@@ -1,0 +1,65 @@
+[gd_scene load_steps=10 format=3 uid="uid://c7shwref3wsbr"]
+
+[ext_resource type="Script" uid="uid://dafiqhhskry3h" path="res://portal.gd" id="1_j20fm"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_vff14"]
+radius = 2.0
+height = 4.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j20fm"]
+shading_mode = 0
+
+[sub_resource type="SphereMesh" id="SphereMesh_oi2tk"]
+flip_faces = true
+radius = 2.0
+height = 4.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dashy"]
+shading_mode = 0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_j20fm"]
+top_radius = 2.0
+height = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oi2tk"]
+shading_mode = 0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_uwyjv"]
+radius = 0.86854804
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_cqy4h"]
+radius = 1.8676991
+
+[node name="Portal" type="MeshInstance3D"]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+layers = 16
+mesh = SubResource("SphereMesh_vff14")
+surface_material_override/0 = SubResource("StandardMaterial3D_j20fm")
+script = ExtResource("1_j20fm")
+
+[node name="Helper" type="Node3D" parent="."]
+
+[node name="Inside" type="MeshInstance3D" parent="."]
+visible = false
+layers = 16
+mesh = SubResource("SphereMesh_oi2tk")
+surface_material_override/0 = SubResource("StandardMaterial3D_dashy")
+
+[node name="PortalFloor" type="MeshInstance3D" parent="Inside"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1920929e-07, 0)
+layers = 16
+mesh = SubResource("CylinderMesh_j20fm")
+surface_material_override/0 = SubResource("StandardMaterial3D_oi2tk")
+
+[node name="TransferArea" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TransferArea"]
+shape = SubResource("SphereShape3D_uwyjv")
+
+[node name="InsideArea" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InsideArea"]
+shape = SubResource("SphereShape3D_cqy4h")
+
+[connection signal="body_entered" from="TransferArea" to="." method="_on_transfer_area_body_entered"]
+[connection signal="body_exited" from="InsideArea" to="." method="_on_inside_area_body_exited"]

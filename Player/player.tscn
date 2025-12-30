@@ -1,0 +1,65 @@
+[gd_scene load_steps=10 format=3 uid="uid://d3nglt4ra5msd"]
+
+[ext_resource type="Script" uid="uid://uy1kx3jxqtkg" path="res://Player/player.gd" id="1_l8h54"]
+[ext_resource type="Shader" uid="uid://dofdlcdirlowr" path="res://Shaders/PortalShader.gdshader" id="2_4ntmi"]
+[ext_resource type="Script" uid="uid://dgabhut0siap6" path="res://stencil_cam.gd" id="2_btcbx"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4ntmi"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_btcbx"]
+
+[sub_resource type="Environment" id="Environment_btcbx"]
+background_mode = 1
+glow_enabled = true
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_btcbx"]
+viewport_path = NodePath("StencilViewPort")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gwnis"]
+resource_local_to_scene = true
+shader = ExtResource("2_4ntmi")
+shader_parameter/stencil_texture = SubResource("ViewportTexture_btcbx")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_k53q1"]
+viewport_path = NodePath("PortalViewPort")
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_l8h54")
+
+[node name="Head" type="Camera3D" parent="."]
+transform = Transform3D(0.9991944, 0, -0.040131792, 0, 1, 0, 0.040131792, 0, 0.9991944, 0, 0.793, -0.733)
+cull_mask = 1048559
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_4ntmi")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_btcbx")
+
+[node name="StencilViewPort" type="SubViewport" parent="."]
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="StencilCam" type="Camera3D" parent="StencilViewPort"]
+transform = Transform3D(-0.9929655, 0, -0.118403874, 0, 1, 0, 0.118403874, 0, -0.9929655, 0, 0.928, 0.891)
+cull_mask = 16
+environment = SubResource("Environment_btcbx")
+script = ExtResource("2_btcbx")
+main_cam_path = NodePath("../../Head")
+
+[node name="PortalViewPort" type="SubViewport" parent="."]
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="PortalCam" type="Camera3D" parent="PortalViewPort"]
+transform = Transform3D(-0.99993324, 0, -0.011553897, 0, 1, 0, 0.011553897, 0, -0.99993324, 0, 0.034562558, 0.895)
+cull_mask = 1048559
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_gwnis")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_k53q1")

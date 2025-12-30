@@ -1,0 +1,67 @@
+[gd_scene load_steps=9 format=3 uid="uid://bsm7ro5mi3e7m"]
+
+[ext_resource type="PackedScene" uid="uid://d3nglt4ra5msd" path="res://Player/player.tscn" id="1_62w18"]
+[ext_resource type="PackedScene" uid="uid://c7shwref3wsbr" path="res://Scenes/portal.tscn" id="2_8a836"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_62w18"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_8a836"]
+sky_material = SubResource("ProceduralSkyMaterial_62w18")
+
+[sub_resource type="Environment" id="Environment_j8job"]
+background_mode = 2
+sky = SubResource("Sky_8a836")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_u1ndb"]
+size = Vector2(20, 20)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_62w18"]
+size = Vector3(20, 1, 20)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8a836"]
+albedo_color = Color(1, 0.45882353, 0.38039216, 1)
+
+[node name="World" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.86036867, -0.28257415, -0.42416695, 0.5096723, 0.47700852, 0.71602887, 0, -0.8322349, 0.55442333, 0, 7.803396, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_j8job")
+
+[node name="FirstStage" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="FirstStage"]
+layers = 18
+mesh = SubResource("PlaneMesh_u1ndb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FirstStage"]
+shape = SubResource("BoxShape3D_62w18")
+
+[node name="SecondStage" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.989159, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SecondStage"]
+layers = 18
+mesh = SubResource("PlaneMesh_u1ndb")
+surface_material_override/0 = SubResource("StandardMaterial3D_8a836")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SecondStage"]
+shape = SubResource("BoxShape3D_62w18")
+
+[node name="Player" parent="." instance=ExtResource("1_62w18")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2802482, 0)
+
+[node name="Portal" parent="." instance=ExtResource("2_8a836")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 4.8146267)
+current = true
+other_portal_path = NodePath("../Portal2")
+
+[node name="Portal2" parent="." instance=ExtResource("2_8a836")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 23.769081, 0, 2.338131)
+other_portal_path = NodePath("../Portal")
